@@ -13,6 +13,8 @@
   "keywords": [
     "vexikoff",
     "windows",
+    "macos",
+    "linux",
     "player",
     "mediaplayer",
     "desktop",
@@ -23,19 +25,27 @@
     "npm": ">=10.0.0"
   },
   "os": [
-    "win32"
+    "win32",
+    "darwin",
+    "linux"
   ],
   "cpu": [
-    "x64"
+    "x64",
+    "arm64"
   ],
   "scripts": {
     "start": "electron .",
     "dev": "electron . --inspect",
-    "pack": "electron-builder --dir --win",
-    "dist": "electron-builder --win",
-    "build": "electron-builder --win",
-    "build:win": "electron-builder --win",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build": "electron-builder",
     "dist:win": "electron-builder --win",
+    "build:win": "electron-builder --win",
+    "dist:mac": "electron-builder --mac",
+    "build:mac": "electron-builder --mac",
+    "dist:linux": "electron-builder --linux",
+    "build:linux": "electron-builder --linux",
+    "dist:all": "electron-builder --win --mac --linux",
     "install-app-deps": "electron-builder install-app-deps",
     "postinstall": "electron-builder install-app-deps"
   },
@@ -177,6 +187,49 @@
       "executableName": "Parnasocial",
       "requestedExecutionLevel": "asInvoker",
       "publisherName": "Parnasocial"
+    },
+    "mac": {
+      "category": "public.app-category.music",
+      "icon": "assets/Parnasocial.icns",
+      "identity": null,
+      "darkModeSupport": true,
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "category": "AudioVideo",
+      "icon": "assets/Parnasocial.png",
+      "maintainer": "vexikoff",
+      "synopsis": "Simple mediaplayer",
+      "description": "Simple mediaplayer for audio and video files.",
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
     },
     "nsis": {
       "installerIcon": "assets/Parnasocial.ico",

@@ -1,5 +1,7 @@
 const SETTINGS_KEY = 'parnasocial:settings';
 
+const RUNTIME_PLATFORM = window.parnasocial && typeof window.parnasocial.platform === 'string' ? window.parnasocial.platform : 'win32';
+
 const settingsDefaults = {
     startWithWindows: false,
     savePlaylist: true,
@@ -87,6 +89,37 @@ let cssTextarea = null;
 let cssPreview = null;
 
 let predCont = null;
+
+function applyStartLabel() {
+    if (!startSwitch) {
+        return;
+    }
+
+    const row = startSwitch.closest('.row');
+
+    if (!row) {
+        return;
+    }
+
+    if (RUNTIME_PLATFORM === 'linux') {
+        row.style.display = 'none';
+        return;
+    }
+
+    row.style.display = '';
+
+    const label = row.querySelector('p');
+
+    if (!label) {
+        return;
+    }
+
+    if (RUNTIME_PLATFORM === 'darwin') {
+        label.textContent = 'Start with macOS';
+    } else {
+        label.textContent = 'Start with Windows';
+    }
+}
 
 function syncRatioDisabled() {
     if (ratioSwitch) {
@@ -392,21 +425,40 @@ function hideCssEditor() {
 function applyTimelineHeight() {
     const timecont = document.querySelector('.timecont');
     const time = document.getElementById('time');
+    const timeClass = document.querySelector('.time');
 
     if (timecont) {
-        timecont.style.height = settingsStore.largeTimeline ? '8px' : '';
+        if (settingsStore.largeTimeline) {
+            timecont.style.setProperty('height', '8px', 'important');
+        } else {
+            timecont.style.removeProperty('height');
+        }
     }
 
     if (time) {
-        time.style.height = settingsStore.largeTimeline ? '100%' : '';
+        if (settingsStore.largeTimeline) {
+            time.style.setProperty('height', '100%', 'important');
+        } else {
+            time.style.removeProperty('height');
+        }
+    }
+
+    if (timeClass && timeClass !== time) {
+        if (settingsStore.largeTimeline) {
+            timeClass.style.setProperty('height', '100%', 'important');
+        } else {
+            timeClass.style.removeProperty('height');
+        }
     }
 }
 
 function applyHighContrast() {
     if (settingsStore.highContrast) {
         document.documentElement.classList.add('highcontrast');
+        document.body.classList.add('highcontrast');
     } else {
         document.documentElement.classList.remove('highcontrast');
+        document.body.classList.remove('highcontrast');
     }
 }
 
@@ -642,6 +694,7 @@ if (contrastSwitch) {
 }
 
 syncRatioDisabled();
+applyStartLabel();
 
 if (startSwitch) {
     startSwitch.addEventListener('change', async () => {
@@ -780,6 +833,10 @@ if (outputSelect) {
 
     if (typeof window.parnasocial.settings.setTray === 'function') {
         window.parnasocial.settings.setTray(settingsStore.keepInTray);
+    }
+
+    if (RUNTIME_PLATFORM === 'linux') {
+        return;
     }
 
     if (typeof window.parnasocial.settings.getAutostart === 'function') {

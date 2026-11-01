@@ -1,5 +1,7 @@
 const { ipcMain } = require('electron');
 const net = require('net');
+const path = require('path');
+const os = require('os');
 
 const CLIENT_ID = '1566346807276081162';
 const ASSET_KEY = 'parnasocial';
@@ -24,9 +26,53 @@ function log(message) {
     console.log('[rpc] ' + message);
 }
 
-function pipeName(index) {
-    return '\\\\?\\pipe\\discord-ipc-' + index;
+function buildEndpoints() {
+    if (process.platform === 'win32') {
+        const endpoints = [];
+
+        for (let i = 0; i <= 9; i++) {
+            endpoints.push('\\\\?\\pipe\\discord-ipc-' + i);
+        }
+
+        return endpoints;
+    }
+
+    const dirs = [];
+    const seenDirs = new Set();
+
+    if (typeof process.env.XDG_RUNTIME_DIR === 'string' && process.env.XDG_RUNTIME_DIR !== '') {
+        dirs.push(process.env.XDG_RUNTIME_DIR);
+        seenDirs.add(process.env.XDG_RUNTIME_DIR);
+    }
+
+    const tmp = os.tmpdir();
+
+    if (!seenDirs.has(tmp)) {
+        dirs.push(tmp);
+        seenDirs.add(tmp);
+    }
+
+    if (typeof process.env.HOME === 'string' && process.env.HOME !== '') {
+        const configDir = path.join(process.env.HOME, '.config');
+
+        if (!seenDirs.has(configDir)) {
+            dirs.push(configDir);
+            seenDirs.add(configDir);
+        }
+    }
+
+    const endpoints = [];
+
+    for (const dir of dirs) {
+        for (let i = 0; i <= 9; i++) {
+            endpoints.push(path.join(dir, 'discord-ipc-' + i));
+        }
+    }
+
+    return endpoints;
 }
+
+const ENDPOINTS = buildEndpoints();
 
 function formatTime(seconds) {
     if (!Number.isFinite(seconds) || seconds < 0) {
@@ -77,7 +123,7 @@ function buildActivity() {
         activity.type = p.mode === 'video' ? 3 : 2;
         activity.buttons = [
             {
-                label: 'Скачать',
+                label: 'Download',
                 url: DOWNLOAD_URL
             }
         ];
@@ -219,17 +265,18 @@ function connect(index) {
         return;
     }
 
-    if (index > 9) {
+    if (index >= ENDPOINTS.length) {
         scheduleReconnect();
         return;
     }
 
-    const sock = net.createConnection(pipeName(index));
+    const endpoint = ENDPOINTS[index];
+    const sock = net.createConnection(endpoint);
     socket = sock;
 
     sock.on('connect', () => {
         buffer = Buffer.alloc(0);
-        log('pipe ' + index + ' connected');
+        log('endpoint connected: ' + endpoint);
         writeFrame(0, {
             v: 1,
             client_id: CLIENT_ID

@@ -66,6 +66,10 @@ body {
   overflow: hidden;
 }
 
+.header[data-os=mac] {
+  padding-left: 52px;
+}
+
 .header {
   position: sticky;
   display: flex;

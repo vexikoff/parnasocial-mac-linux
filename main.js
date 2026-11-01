@@ -30,6 +30,60 @@ const ALLOWED_PERMISSIONS = new Set([
     'media'
 ]);
 
+const IS_WINDOWS = process.platform === 'win32';
+const IS_MAC = process.platform === 'darwin';
+const IS_LINUX = process.platform === 'linux';
+
+function getBaseWebPreferences() {
+    return {
+        preload: PRELOAD_PATH,
+        contextIsolation: true,
+        nodeIntegration: false,
+        sandbox: true,
+        webSecurity: true,
+        allowRunningInsecureContent: false,
+        experimentalFeatures: false,
+        spellcheck: false,
+        devTools: !app.isPackaged
+    };
+}
+
+function getWindowChromeOptions(width, height, minWidth, minHeight) {
+    const dark = getSavedTheme() === '1';
+
+    const options = {
+        width: width,
+        height: height,
+        minWidth: minWidth,
+        minHeight: minHeight,
+        show: false,
+        title: APP_NAME,
+        icon: ICON_PATH,
+        backgroundColor: dark ? '#101010' : '#ffffff',
+        thickFrame: true,
+        webPreferences: getBaseWebPreferences()
+    };
+
+    if (IS_WINDOWS) {
+        options.titleBarStyle = 'hidden';
+        options.titleBarOverlay = {
+            color: dark ? '#101010' : '#ffffff',
+            symbolColor: dark ? '#FFFFFF' : '#101010',
+            height: WINDOW_CONTROLS_HEIGHT
+        };
+    } else if (IS_MAC) {
+        options.titleBarStyle = 'hiddenInset';
+        options.trafficLightPosition = {
+            x: 14,
+            y: 12
+        };
+    } else {
+        options.frame = true;
+    }
+
+    return options;
+}
+
 const playingSenders = new Set();
 let awakeBlockerId = null;
 
@@ -649,36 +703,7 @@ function createFullscreenWindow() {
         return;
     }
 
-    const dark = getSavedTheme() === '1';
-
-    fullscreenWindow = new BrowserWindow({
-        width: 1280,
-        height: 800,
-        minWidth: 800,
-        minHeight: 1000,
-        show: false,
-        title: APP_NAME,
-        icon: ICON_PATH,
-        backgroundColor: dark ? '#101010' : '#ffffff',
-        thickFrame: true,
-        titleBarStyle: 'hidden',
-        titleBarOverlay: {
-            color: dark ? '#101010' : '#ffffff',
-            symbolColor: dark ? '#FFFFFF' : '#101010',
-            height: WINDOW_CONTROLS_HEIGHT
-        },
-        webPreferences: {
-            preload: PRELOAD_PATH,
-            contextIsolation: true,
-            nodeIntegration: false,
-            sandbox: true,
-            webSecurity: true,
-            allowRunningInsecureContent: false,
-            experimentalFeatures: false,
-            spellcheck: false,
-            devTools: !app.isPackaged
-        }
-    });
+    fullscreenWindow = new BrowserWindow(getWindowChromeOptions(1280, 800, 800, 1000));
 
     fullscreenWindow.setMenu(null);
 
@@ -1133,36 +1158,8 @@ ipcMain.handle('system:get-windows-username', () => {
 
 function createWindow(page) {
     const targetPath = page === 'fullscreen' ? FULLSCREEN_PATH : INDEX_PATH;
-    const dark = getSavedTheme() === '1';
 
-    mainWindow = new BrowserWindow({
-        width: 1280,
-        height: 800,
-        minWidth: 1000,
-        minHeight: 800,
-        show: false,
-        title: APP_NAME,
-        icon: ICON_PATH,
-        backgroundColor: dark ? '#101010' : '#ffffff',
-        thickFrame: true,
-        titleBarStyle: 'hidden',
-        titleBarOverlay: {
-            color: dark ? '#101010' : '#ffffff',
-            symbolColor: dark ? '#FFFFFF' : '#101010',
-            height: WINDOW_CONTROLS_HEIGHT
-        },
-        webPreferences: {
-            preload: PRELOAD_PATH,
-            contextIsolation: true,
-            nodeIntegration: false,
-            sandbox: true,
-            webSecurity: true,
-            allowRunningInsecureContent: false,
-            experimentalFeatures: false,
-            spellcheck: false,
-            devTools: !app.isPackaged
-        }
-    });
+    mainWindow = new BrowserWindow(getWindowChromeOptions(1280, 800, 1000, 800));
 
     mainWindow.setMenu(null);
 
@@ -1196,62 +1193,62 @@ if (pendingMediaFile && getMediaType(pendingMediaFile) === 'video') {
     startPage = 'fullscreen';
 }
 
-if (process.platform !== 'win32') {
+app.setName(APP_NAME);
+
+if (IS_WINDOWS) {
+    app.setAppUserModelId(APP_ID);
+}
+
+app.enableSandbox();
+
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
     app.quit();
 } else {
-    app.setName(APP_NAME);
-    app.setAppUserModelId(APP_ID);
-    app.enableSandbox();
+    app.on('second-instance', (event, argv) => {
+        const filePath = extractMediaArg(argv);
 
-    const gotTheLock = app.requestSingleInstanceLock();
+        if (filePath) {
+            if (getMediaType(filePath) === 'video') {
+                pendingMediaFile = filePath;
 
-    if (!gotTheLock) {
-        app.quit();
-    } else {
-        app.on('second-instance', (event, argv) => {
-            const filePath = extractMediaArg(argv);
-
-            if (filePath) {
-                if (getMediaType(filePath) === 'video') {
-                    pendingMediaFile = filePath;
-
-                    if (mainWindow && !mainWindow.isDestroyed()) {
-                        mainWindow.loadFile(FULLSCREEN_PATH).catch(() => {
-                        });
-                    }
-                } else {
-                    sendOpenFile(mainWindow, filePath);
+                if (mainWindow && !mainWindow.isDestroyed()) {
+                    mainWindow.loadFile(FULLSCREEN_PATH).catch(() => {
+                    });
                 }
+            } else {
+                sendOpenFile(mainWindow, filePath);
+            }
+        }
+
+        if (mainWindow && !mainWindow.isDestroyed()) {
+            if (mainWindow.isMinimized()) {
+                mainWindow.restore();
             }
 
-            if (mainWindow && !mainWindow.isDestroyed()) {
-                if (mainWindow.isMinimized()) {
-                    mainWindow.restore();
-                }
+            showMainWindow();
+        }
+    });
 
-                showMainWindow();
+    app.whenReady().then(() => {
+        session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+            callback(ALLOWED_PERMISSIONS.has(permission));
+        });
+
+        session.defaultSession.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
+            return ALLOWED_PERMISSIONS.has(permission);
+        });
+
+        registerIpc();
+        createWindow(startPage);
+
+        app.on('activate', () => {
+            if (BrowserWindow.getAllWindows().length === 0) {
+                createWindow(startPage);
             }
         });
-
-        app.whenReady().then(() => {
-            session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
-                callback(ALLOWED_PERMISSIONS.has(permission));
-            });
-
-            session.defaultSession.setPermissionCheckHandler((webContents, permission, requestingOrigin, details) => {
-                return ALLOWED_PERMISSIONS.has(permission);
-            });
-
-            registerIpc();
-            createWindow(startPage);
-
-            app.on('activate', () => {
-                if (BrowserWindow.getAllWindows().length === 0) {
-                    createWindow(startPage);
-                }
-            });
-        });
-    }
+    });
 }
 
 ipcMain.on('themechang', (event, theme) => {
@@ -1263,29 +1260,29 @@ ipcMain.on('themechang', (event, theme) => {
 
     if (theme === '1') {
         writeSavedTheme('1');
-        window.setTitleBarOverlay({
-            color: '#101010',
-            symbolColor: '#FFFFFF'
-        });
+
+        if (IS_WINDOWS) {
+            window.setTitleBarOverlay({
+                color: '#101010',
+                symbolColor: '#FFFFFF'
+            });
+        }
     } else if (theme === '0') {
         writeSavedTheme('0');
-        window.setTitleBarOverlay({
-            color: '#ffffff',
-            symbolColor: '#101010'
-        });
+
+        if (IS_WINDOWS) {
+            window.setTitleBarOverlay({
+                color: '#ffffff',
+                symbolColor: '#101010'
+            });
+        }
     }
 });
 
 app.on('window-all-closed', () => {
-    for (const [, entry] of folderWatchers.entries()) {
-        try {
-            entry.watcher.close();
-        } catch (error) {
-        }
+    if (!IS_MAC) {
+        app.quit();
     }
-
-    folderWatchers.clear();
-    app.quit();
 });
 
 app.on('before-quit', () => {

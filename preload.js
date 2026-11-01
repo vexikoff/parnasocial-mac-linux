@@ -87,6 +87,7 @@ Object.freeze(api);
 contextBridge.exposeInMainWorld('parnasocial', {
     changeth: (theme) => ipcRenderer.send('themechang', theme),
     ...api,
+    platform: process.platform,
     getWindowsUsername: () => {
         return ipcRenderer.invoke('system:get-windows-username');
     }

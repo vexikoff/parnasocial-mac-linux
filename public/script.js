@@ -1826,6 +1826,7 @@ function buildDirectoryNode(node, depth) {
     }
 
     row.draggable = true;
+
     row.addEventListener('dragstart', (event) => {
         internalDragPath = node.path;
         event.dataTransfer.setData('text/parnasocial-node', node.path);
