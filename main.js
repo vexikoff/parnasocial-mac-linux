@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, session, dialog, Tray, Menu, powerSaveBlocker } = require('electron');
+const { app, BrowserWindow, ipcMain, session, dialog, Tray, Menu, powerSaveBlocker, nativeImage } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -17,7 +17,7 @@ const APP_NAME = 'Parnasocial';
 const PRELOAD_PATH = path.join(__dirname, 'preload.js');
 const INDEX_PATH = path.join(__dirname, 'public', 'index.html');
 const FULLSCREEN_PATH = path.join(__dirname, 'public', 'fullscreen.html');
-const ICON_PATH = path.join(__dirname, 'assets', 'Parnasocial.ico');
+const ASSETS_DIR = path.join(__dirname, 'assets');
 const WINDOW_CONTROLS_HEIGHT = 36;
 
 const AUDIO_EXTS = ['.mp3', '.wav', '.ogg', '.flac', '.m4a', '.aac', '.wma'];
@@ -30,66 +30,54 @@ const ALLOWED_PERMISSIONS = new Set([
     'media'
 ]);
 
-const IS_WINDOWS = process.platform === 'win32';
-const IS_MAC = process.platform === 'darwin';
-const IS_LINUX = process.platform === 'linux';
-
-function getBaseWebPreferences() {
-    return {
-        preload: PRELOAD_PATH,
-        contextIsolation: true,
-        nodeIntegration: false,
-        sandbox: true,
-        webSecurity: true,
-        allowRunningInsecureContent: false,
-        experimentalFeatures: false,
-        spellcheck: false,
-        devTools: !app.isPackaged
-    };
-}
-
-function getWindowChromeOptions(width, height, minWidth, minHeight) {
-    const dark = getSavedTheme() === '1';
-
-    const options = {
-        width: width,
-        height: height,
-        minWidth: minWidth,
-        minHeight: minHeight,
-        show: false,
-        title: APP_NAME,
-        icon: ICON_PATH,
-        backgroundColor: dark ? '#101010' : '#ffffff',
-        thickFrame: true,
-        webPreferences: getBaseWebPreferences()
-    };
-
-    if (IS_WINDOWS) {
-        options.titleBarStyle = 'hidden';
-        options.titleBarOverlay = {
-            color: dark ? '#101010' : '#ffffff',
-            symbolColor: dark ? '#FFFFFF' : '#101010',
-            height: WINDOW_CONTROLS_HEIGHT
-        };
-    } else if (IS_MAC) {
-        options.titleBarStyle = 'hiddenInset';
-        options.trafficLightPosition = {
-            x: 14,
-            y: 12
-        };
-    } else {
-        options.frame = true;
-    }
-
-    return options;
-}
-
 const playingSenders = new Set();
 let awakeBlockerId = null;
 
 const folderWatchers = new Map();
 const folderDebounce = new Map();
 const WATCH_DEBOUNCE_MS = 400;
+
+function resolveAsset(candidates) {
+    for (const name of candidates) {
+        const fullPath = path.join(ASSETS_DIR, name);
+
+        try {
+            if (fs.existsSync(fullPath)) {
+                return fullPath;
+            }
+        } catch (error) {
+        }
+    }
+
+    return '';
+}
+
+function getWindowIconCandidates() {
+    if (process.platform === 'win32') {
+        return ['Parnasocial.ico', 'Parnasocial.png'];
+    }
+
+    if (process.platform === 'darwin') {
+        return ['Parnasocial.icns', 'Parnasocial.png'];
+    }
+
+    return ['Parnasocial.png', 'Parnasocial.icns'];
+}
+
+function getTrayIconCandidates() {
+    if (process.platform === 'win32') {
+        return ['Parnasocial.ico', 'Parnasocial.png'];
+    }
+
+    if (process.platform === 'darwin') {
+        return ['Parnasocial.png', 'Parnasocial.icns'];
+    }
+
+    return ['Parnasocial.png', 'Parnasocial.icns'];
+}
+
+const WINDOW_ICON_PATH = resolveAsset(getWindowIconCandidates());
+const TRAY_ICON_PATH = resolveAsset(getTrayIconCandidates());
 
 function stripHash(url) {
     const hashIndex = url.indexOf('#');
@@ -170,7 +158,7 @@ function getSavedHardware() {
     const filePath = getHardwareStatePath();
 
     if (filePath === '') {
-        return true;
+        return process.platform === 'win32';
     }
 
     try {
@@ -621,12 +609,33 @@ function showMainWindow() {
     mainWindow.focus();
 }
 
+function buildTrayImage() {
+    if (TRAY_ICON_PATH !== '') {
+        try {
+            const image = nativeImage.createFromPath(TRAY_ICON_PATH);
+
+            if (!image.isEmpty()) {
+                return image;
+            }
+        } catch (error) {
+        }
+    }
+
+    return nativeImage.createEmpty();
+}
+
 function ensureTray() {
     if (tray) {
         return;
     }
 
-    tray = new Tray(ICON_PATH);
+    try {
+        tray = new Tray(buildTrayImage());
+    } catch (error) {
+        tray = null;
+        return;
+    }
+
     tray.setToolTip(APP_NAME);
 
     const menu = Menu.buildFromTemplate([
@@ -703,7 +712,36 @@ function createFullscreenWindow() {
         return;
     }
 
-    fullscreenWindow = new BrowserWindow(getWindowChromeOptions(1280, 800, 800, 1000));
+    const dark = getSavedTheme() === '1';
+
+    fullscreenWindow = new BrowserWindow({
+        width: 1280,
+        height: 800,
+        minWidth: 800,
+        minHeight: 1000,
+        show: false,
+        title: APP_NAME,
+        icon: WINDOW_ICON_PATH === '' ? undefined : WINDOW_ICON_PATH,
+        backgroundColor: dark ? '#101010' : '#ffffff',
+        thickFrame: true,
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            color: dark ? '#101010' : '#ffffff',
+            symbolColor: dark ? '#FFFFFF' : '#101010',
+            height: WINDOW_CONTROLS_HEIGHT
+        },
+        webPreferences: {
+            preload: PRELOAD_PATH,
+            contextIsolation: true,
+            nodeIntegration: false,
+            sandbox: true,
+            webSecurity: true,
+            allowRunningInsecureContent: false,
+            experimentalFeatures: false,
+            spellcheck: false,
+            devTools: !app.isPackaged
+        }
+    });
 
     fullscreenWindow.setMenu(null);
 
@@ -1158,8 +1196,36 @@ ipcMain.handle('system:get-windows-username', () => {
 
 function createWindow(page) {
     const targetPath = page === 'fullscreen' ? FULLSCREEN_PATH : INDEX_PATH;
+    const dark = getSavedTheme() === '1';
 
-    mainWindow = new BrowserWindow(getWindowChromeOptions(1280, 800, 1000, 800));
+    mainWindow = new BrowserWindow({
+        width: 1280,
+        height: 800,
+        minWidth: 1000,
+        minHeight: 800,
+        show: false,
+        title: APP_NAME,
+        icon: WINDOW_ICON_PATH === '' ? undefined : WINDOW_ICON_PATH,
+        backgroundColor: dark ? '#101010' : '#ffffff',
+        thickFrame: true,
+        titleBarStyle: 'hidden',
+        titleBarOverlay: {
+            color: dark ? '#101010' : '#ffffff',
+            symbolColor: dark ? '#FFFFFF' : '#101010',
+            height: WINDOW_CONTROLS_HEIGHT
+        },
+        webPreferences: {
+            preload: PRELOAD_PATH,
+            contextIsolation: true,
+            nodeIntegration: false,
+            sandbox: true,
+            webSecurity: true,
+            allowRunningInsecureContent: false,
+            experimentalFeatures: false,
+            spellcheck: false,
+            devTools: !app.isPackaged
+        }
+    });
 
     mainWindow.setMenu(null);
 
@@ -1194,11 +1260,7 @@ if (pendingMediaFile && getMediaType(pendingMediaFile) === 'video') {
 }
 
 app.setName(APP_NAME);
-
-if (IS_WINDOWS) {
-    app.setAppUserModelId(APP_ID);
-}
-
+app.setAppUserModelId(APP_ID);
 app.enableSandbox();
 
 const gotTheLock = app.requestSingleInstanceLock();
@@ -1261,7 +1323,7 @@ ipcMain.on('themechang', (event, theme) => {
     if (theme === '1') {
         writeSavedTheme('1');
 
-        if (IS_WINDOWS) {
+        if (process.platform === 'win32') {
             window.setTitleBarOverlay({
                 color: '#101010',
                 symbolColor: '#FFFFFF'
@@ -1270,7 +1332,7 @@ ipcMain.on('themechang', (event, theme) => {
     } else if (theme === '0') {
         writeSavedTheme('0');
 
-        if (IS_WINDOWS) {
+        if (process.platform === 'win32') {
             window.setTitleBarOverlay({
                 color: '#ffffff',
                 symbolColor: '#101010'
@@ -1280,9 +1342,15 @@ ipcMain.on('themechang', (event, theme) => {
 });
 
 app.on('window-all-closed', () => {
-    if (!IS_MAC) {
-        app.quit();
+    for (const [, entry] of folderWatchers.entries()) {
+        try {
+            entry.watcher.close();
+        } catch (error) {
+        }
     }
+
+    folderWatchers.clear();
+    app.quit();
 });
 
 app.on('before-quit', () => {
