@@ -2,7 +2,7 @@
 
 ![Screenshot](ghassets/Screenshot.png)
 
-A Windows desktop media player project in early development.
+A desktop media player project in early development.
 
 The goal is a local-first player: no account, no cloud, no telemetry. The current state is an interface prototype. Media playback, folder scanning, playlist management, and full settings are not implemented yet.
 
