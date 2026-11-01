@@ -1004,5 +1004,12 @@ html[data-theme="1"] .settings {
   background-color: rgb(16, 16, 16);
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3), 0px 8px 16px rgba(0, 0, 0, 0.15), 0px 16px 32px rgba(0, 0, 0, 0.075);
 }
+html[data-theme="1"] .settings .outputdev {
+  background-color: #1a1a1a !important;
+  border: 1px #303030 solid !important;
+}
+html[data-theme="1"] .settings .outputdev option {
+  color: #000000 !important;
+}
 
 /*# sourceMappingURL=style.css.map */

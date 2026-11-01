@@ -1056,5 +1056,12 @@ html[data-theme="1"] {
     .settings {
         background-color: rgb(16 16 16 / 1);
         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3), 0px 8px 16px rgba(0, 0, 0, 0.15), 0px 16px 32px rgba(0, 0, 0, 0.075);
+        .outputdev {
+            background-color: #1a1a1a !important;
+            border: 1px #303030 solid !important;
+            option {
+                color: #000000 !important;
+            }
+        }
     }
 }
