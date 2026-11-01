@@ -251,6 +251,10 @@
     "portable": {
       "artifactName": "${productName}-portable-${version}.${ext}"
     },
-    "publish": []
+    "publish": {
+      "provider": "github",
+      "owner": "vexikoff",
+      "repo": "parnasocial-mac-linux"
+    }
   }
 }
