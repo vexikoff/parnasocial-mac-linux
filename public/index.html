@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../assets/style.css">
+    <title>Parnasocial</title>
+</head>
+<body>
+<!--<div class="predcont">-->
+<!--    <div class="pred">-->
+<!--        <h1>To save the changes, you need to restart the application.</h1>-->
+<!--        <p>All data and information will be preserved</p>-->
+<!--        <div class="row">-->
+<!--            <button class="restart" id="restart">Restart</button>-->
+<!--            <button id="skip">Skip</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+<div class="grad"></div>
+<header class="header">
+    <div class="iconp">
+        <img class="img" src="../assets/Parnasocial_mini18.png" alt="Пожалуйста, перезагрузите страницу (Ctrl + R)">
+        <h1>Parnasocial</h1>
+        <div class="nav">
+            <button class="file file111" id="file">File</button>
+        </div>
+    </div>
+    <div class="right">
+        <button class="segoe" onclick="openset()">&#xF00F;</button>
+    </div>
+</header>
+<div class="filess hidden" id="files">
+    <button class="file row">
+        <span class="segoeplus">&#xE8EB;</span>
+        Open
+    </button>
+    <button class="file row not">
+        Recent
+        <span class="segoeplus rrd">&#xE48E;</span>
+    </button>
+    <button class="file row not">
+        Exit
+    </button>
+</div>
+<div class="recentt hidden">
+    <button class="file row">
+        Parnasocial
+    </button>
+</div>
+<div class="main">
+    <div class="left">
+        <div class="top">
+            <input type="search" name="folder" id="srcc" class="search skr">
+            <button class="segoeplus button" id="openfolder">&#xE8EB;</button>
+            <button class="segoeplus button" id="repeatfolder">&#xF5E7;</button>
+            <button class="segoeplus button" id="shufflefolder">&#xE14B;</button>
+            <button class="segoeplus button" id="foldertoplaylist">&#xE8F1;</button>
+            <button class="segoeplus button" id="srch">&#xEFD7;</button>
+        </div>
+        <div class="spacer"></div>
+        <div class="directory">
+<!--            <div class="folder">-->
+<!--                <div class="row">-->
+<!--                    <p class="segoeplus" id="skr1">&#xE70D;</p>-->
+<!--                    <p class="segoeplus">&#xE838;</p>-->
+<!--                    <p class="foldername">Folder name</p>-->
+<!--                </div>-->
+<!--                <div class="spacer"></div>-->
+<!--                <div class="folder">-->
+<!--                    <div class="row">-->
+<!--                        <p class="segoeplus" id="raskr1">&#xE76C;</p>-->
+<!--                        <p class="segoeplus">&#xE8B7;</p>-->
+<!--                        <p class="foldername">Folder name</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="file">-->
+<!--                    <div class="row">-->
+<!--                        <p class="segoeplus">&#xE9CE;</p>-->
+<!--                        <p class="foldername">File name</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="folder">-->
+<!--                    <div class="row">-->
+<!--                        <p class="segoeplus" id="raskr21">&#xE76C;</p>-->
+<!--                        <p class="segoeplus">&#xE8B7;</p>-->
+<!--                        <p class="foldername">Folder name</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+        </div>
+    </div>
+    <div class="center">
+        <div class="row">
+            <h1>Hello, </h1>
+            <h1 id="name"></h1>
+        </div>
+        <div class="player">
+            <div class="prew">
+                <img src="../assets/unknowndark.png" class="playerimg" id="playerimg">
+                <div class="timecont"><div class="time" id="time"></div></div>
+            </div>
+            <p class="trackname" style="margin-left: 4px; font-size: 24px; margin-right: auto; margin-top: -16px; margin-bottom: -16px;">Parnasocial</p>
+            <div class="row" style="width: 100%; margin-bottom: -16px;">
+                <p class="trackauthor" style="margin-left: 4px; font-size: 20px; margin-right: auto; margin-top: -8px; margin-bottom: -16px;">vexikoff</p>
+                <p class="tracktime" style="margin-left: auto; margin-right: 4px; margin-top: auto;">0:00</p>
+            </div>
+            <div class="row">
+                <button class="segoeplus pr" id="videomode">&#xF4FB;</button>
+                <button class="segoeplus pr" id="back">&#xEED7;</button>
+                <button class="segoeplus play" id="play">&#xEE8D;</button>
+                <button class="segoeplus pr" id="next">&#xECAC;</button>
+                <div class="row volumep">
+                    <button class="segoeplus pr" id="volumepok">&#xF105;</button>
+                    <input type="range" min="0" max="100" value="70" step="1" class="volume" id="volume" >
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right">
+        <div class="top topp">
+            <input type="search" name="folder" id="srccp" class="search skr">
+            <button class="segoeplus button" id="repeatplaylist">&#xF5E7;</button>
+            <button class="segoeplus button" id="shuffleplaylist">&#xE14B;</button>
+            <button class="segoeplus button" id="addplaylist">&#xE6EB;</button>
+            <button class="segoeplus button" id="addfolderplaylist">&#xE8ED;</button>
+            <button class="segoeplus button" id="srchp">&#xEFD7;</button>
+        </div>
+        <div class="spacer"></div>
+        <div class="playlist">
+<!--            <div class="folder">-->
+<!--                <div class="row">-->
+<!--                    <p class="segoeplus" id="skr">&#xE70D;</p>-->
+<!--                    <p class="segoeplus">&#xE838;</p>-->
+<!--                    <p class="foldername">Folder name</p>-->
+<!--                </div>-->
+<!--                <div class="spacer"></div>-->
+<!--                <div class="folder">-->
+<!--                    <div class="row">-->
+<!--                        <p class="segoeplus" id="raskr">&#xE76C;</p>-->
+<!--                        <p class="segoeplus">&#xE8B7;</p>-->
+<!--                        <p class="foldername">Folder name</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="file">-->
+<!--                    <div class="row">-->
+<!--                        <p class="segoeplus">&#xE90B;</p>-->
+<!--                        <p class="foldername">File name</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="folder">-->
+<!--                    <div class="row">-->
+<!--                        <p class="segoeplus" id="raskr2">&#xE76C;</p>-->
+<!--                        <p class="segoeplus">&#xE8B7;</p>-->
+<!--                        <p class="foldername">Folder name</p>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+        </div>
+    </div>
+</div>
+<div class="settings vniz">
+    <div class="main">
+        <h1>Settings</h1>
+        <div class="row" style="align-items: flex-start; justify-content: flex-start;">
+            <div class="lefts">
+                <h3>System</h3>
+                <div class="row">
+                    <label class="switch switchss">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Dark theme</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchsss">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Start with</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchccc">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <p>Save playlist</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchcccc">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <p>Keep in tray after closing</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchcc">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Crossfade</p>
+                </div>
+                <div class="row">
+                    <label class="switch rpc">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Discord RPC</p>
+                </div>
+                <div class="row">
+                    <label class="switch awake">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Stay awake while playing</p>
+                </div>
+                <div class="row">
+                    <label class="switch hardware">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Hardware Acceleration</p>
+                </div>
+                <div class="row">
+                    <select class="outputdev" id="outputdev">
+                        <option value="1">Auto</option>
+                    </select>
+                    <p>Output Device</p>
+                </div>
+                <div class="row">
+                    <label class="switch css">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Custom css</p>
+                </div>
+            </div>
+            <div class="rights">
+                <h3>Audio mode</h3>
+                <div class="row">
+                    <label class="switch switchvideoprew">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Video preview</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchautoratio">
+                        <input type="checkbox" disabled>
+                        <span class="slider"></span>
+                    </label>
+                    <p>Auto ratio</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchvizual">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Visualizer</p>
+                </div>
+                <div class="row">
+                    <label class="switch bassc">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Bass Boost</p>
+                </div>
+                <div class="row">
+                    <label class="switch watchfolders">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Watch folders for changes</p>
+                </div>
+                <h3>Accessibility</h3>
+                <div class="row">
+                    <label class="switch heighttimeline">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Large height timeline</p>
+                </div>
+                <div class="row">
+                    <label class="switch contrast">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>High contrast</p>
+                </div>
+                <p>Developers:</p>
+                <a href="https://github.com/vexikoff">vexikoff</a>
+            </div>
+        </div>
+        <a style="font-size: 8px; opacity: 0.3; margin-top: auto; margin-bottom: 8px; margin-left: auto;">qwen</a>
+    </div>
+</div>
+<script src="vizualizator.js"></script>
+<script src="settings.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

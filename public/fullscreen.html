@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../assets/style.css">
+    <link rel="stylesheet" href="../assets/fullscreen.css">
+    <title>Parnasocial</title>
+</head>
+<body>
+<div class="grad"></div>
+<header class="header">
+    <div class="iconp">
+        <img class="img" src="../assets/Parnasocial_mini18.png" alt="Пожалуйста, перезагрузите страницу (Ctrl + R)">
+        <h1>Parnasocial</h1>
+    </div>
+    <div class="right">
+        <button class="segoe" onclick="openset()">&#xF00F;</button>
+    </div>
+</header>
+<div class="main">
+    <video class="video" src="" id="video"></video>
+    <div class="controls">
+        <div class="timecont"><div class="time" id="time"></div></div>
+        <button class="segoeplus pr" id="back">&#xEED7;</button>
+        <button class="segoeplus play" id="play">&#xEE8D;</button>
+        <button class="segoeplus pr" id="next">&#xECAC;</button>
+        <button class="segoeplus pr" id="backtoaudio">&#xEA05;</button>
+        <div class="row volumep">
+            <button class="segoeplus pr" id="volumepok">&#xE995;</button>
+            <input type="range" min="0" max="100" value="70" step="1" class="volume" id="volume" >
+        </div>
+        <button class="segoeplus pr rightss" id="fullscreen">&#xE92D;</button>
+    </div>
+</div>
+<div class="settings vniz">
+    <div class="main">
+        <h1>Settings</h1>
+        <div class="row" style="align-items: flex-start; justify-content: flex-start;">
+            <div class="lefts">
+                <h3>System</h3>
+                <div class="row">
+                    <label class="switch switchss">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Dark theme</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchsss">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Start with Windows</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchccc">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <p>Save playlist</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchcccc">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <p>Keep in tray after closing</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchcc">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Crossfade</p>
+                </div>
+                <div class="row">
+                    <label class="switch rpc">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Discord RPC</p>
+                </div>
+                <div class="row">
+                    <label class="switch awake">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Stay awake while playing</p>
+                </div>
+                <div class="row">
+                    <label class="switch hardware">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Hardware Acceleration</p>
+                </div>
+                <div class="row">
+                    <select class="outputdev" id="outputdev">
+                        <option value="1">Auto</option>
+                    </select>
+                    <p>Output Device</p>
+                </div>
+                <div class="row">
+                    <label class="switch css">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Custom css</p>
+                </div>
+            </div>
+            <div class="rights">
+                <h3>Audio mode</h3>
+                <div class="row">
+                    <label class="switch switchvideoprew">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Video preview</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchautoratio">
+                        <input type="checkbox" disabled>
+                        <span class="slider"></span>
+                    </label>
+                    <p>Auto ratio</p>
+                </div>
+                <div class="row">
+                    <label class="switch switchvizual">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Visualizer</p>
+                </div>
+                <div class="row">
+                    <label class="switch bassc">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Bass Boost</p>
+                </div>
+                <div class="row">
+                    <label class="switch watchfolders">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Watch folders for changes</p>
+                </div>
+                <h3>Accessibility</h3>
+                <div class="row">
+                    <label class="switch heighttimeline">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>Large height timeline</p>
+                </div>
+                <div class="row">
+                    <label class="switch contrast">
+                        <input type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <p>High contrast</p>
+                </div>
+                <p>Developers:</p>
+                <a href="https://github.com/vexikoff">vexikoff</a>
+            </div>
+        </div>
+        <a style="font-size: 8px; opacity: 0.3; margin-top: auto; margin-bottom: 8px; margin-left: auto;">qwen</a>
+    </div>
+</div>
+<script src="settings.js"></script>
+<script src="fullscreen.js"></script>
+</body>
+</html>

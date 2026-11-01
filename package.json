@@ -1,0 +1,203 @@
+{
+  "name": "parnasocial",
+  "productName": "Parnasocial",
+  "version": "0.3.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "main.js",
+  "description": "Simple mediaplayer",
+  "author": {
+    "name": "vexikoff"
+  },
+  "license": "MIT",
+  "keywords": [
+    "vexikoff",
+    "windows",
+    "player",
+    "mediaplayer",
+    "desktop",
+    "parnasocial"
+  ],
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  },
+  "os": [
+    "win32"
+  ],
+  "cpu": [
+    "x64"
+  ],
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --inspect",
+    "pack": "electron-builder --dir --win",
+    "dist": "electron-builder --win",
+    "build": "electron-builder --win",
+    "build:win": "electron-builder --win",
+    "dist:win": "electron-builder --win",
+    "install-app-deps": "electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "xyz.vexikoff.parnasocial",
+    "productName": "Parnasocial",
+    "copyright": "Copyright © 2026 vexikoff",
+    "asar": true,
+    "compression": "maximum",
+    "forceCodeSigning": false,
+    "artifactName": "${productName}-${version}-${arch}-${os}.${ext}",
+    "electronLanguages": [
+      "en-US",
+      "ru-RU"
+    ],
+    "directories": {
+      "output": "release/${version}"
+    },
+    "files": [
+      "main.js",
+      "discordrpc.js",
+      "preload.js",
+      "public/**/*",
+      "assets/**/*",
+      "package.json",
+      "!**/*.map",
+      "!**/Thumbs.db"
+    ],
+    "extraMetadata": {
+      "main": "main.js"
+    },
+    "fileAssociations": [
+      {
+        "ext": "mp4",
+        "name": "Parnasocial Video",
+        "description": "Parnasocial video file",
+        "role": "Viewer",
+        "mimeType": "video/mp4"
+      },
+      {
+        "ext": "mkv",
+        "name": "Parnasocial Video",
+        "description": "Parnasocial video file",
+        "role": "Viewer",
+        "mimeType": "video/x-matroska"
+      },
+      {
+        "ext": "webm",
+        "name": "Parnasocial Video",
+        "description": "Parnasocial video file",
+        "role": "Viewer",
+        "mimeType": "video/webm"
+      },
+      {
+        "ext": "mov",
+        "name": "Parnasocial Video",
+        "description": "Parnasocial video file",
+        "role": "Viewer",
+        "mimeType": "video/quicktime"
+      },
+      {
+        "ext": "avi",
+        "name": "Parnasocial Video",
+        "description": "Parnasocial video file",
+        "role": "Viewer",
+        "mimeType": "video/x-msvideo"
+      },
+      {
+        "ext": "mp3",
+        "name": "Parnasocial Audio",
+        "description": "Parnasocial audio file",
+        "role": "Viewer",
+        "mimeType": "audio/mpeg"
+      },
+      {
+        "ext": "wav",
+        "name": "Parnasocial Audio",
+        "description": "Parnasocial audio file",
+        "role": "Viewer",
+        "mimeType": "audio/wav"
+      },
+      {
+        "ext": "ogg",
+        "name": "Parnasocial Audio",
+        "description": "Parnasocial audio file",
+        "role": "Viewer",
+        "mimeType": "audio/ogg"
+      },
+      {
+        "ext": "flac",
+        "name": "Parnasocial Audio",
+        "description": "Parnasocial audio file",
+        "role": "Viewer",
+        "mimeType": "audio/flac"
+      },
+      {
+        "ext": "m4a",
+        "name": "Parnasocial Audio",
+        "description": "Parnasocial audio file",
+        "role": "Viewer",
+        "mimeType": "audio/mp4"
+      },
+      {
+        "ext": "aac",
+        "name": "Parnasocial Audio",
+        "description": "Parnasocial audio file",
+        "role": "Viewer",
+        "mimeType": "audio/aac"
+      },
+      {
+        "ext": "wma",
+        "name": "Parnasocial Audio",
+        "description": "Parnasocial audio file",
+        "role": "Viewer",
+        "mimeType": "audio/x-ms-wma"
+      }
+    ],
+    "win": {
+      "icon": "assets/Parnasocial.ico",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "executableName": "Parnasocial",
+      "requestedExecutionLevel": "asInvoker",
+      "publisherName": "Parnasocial"
+    },
+    "nsis": {
+      "installerIcon": "assets/Parnasocial.ico",
+      "uninstallerIcon": "assets/Parnasocial.ico",
+      "installerHeaderIcon": "assets/Parnasocial.ico",
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Parnasocial",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "installerLanguages": [
+        "en_US",
+        "ru_RU"
+      ]
+    },
+    "portable": {
+      "artifactName": "${productName}-portable-${version}.${ext}"
+    },
+    "publish": []
+  }
+}
