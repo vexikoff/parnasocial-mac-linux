@@ -8,7 +8,7 @@ The goal is a local-first player: no account, no cloud, no telemetry. The curren
 
 ## Platform
 
-Windows only. The application targets `win32` and `x64`. The main process exits immediately when launched on another platform.
+Windows and mac and linux.
 
 ## Tech stack
 
